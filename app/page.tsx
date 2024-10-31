@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 export const metadata = {
   title: 'Test App',
@@ -8,9 +9,14 @@ export const metadata = {
 
 const HomePage = () => {
   return (
-    <h1>
-      HomePage
-    </h1>
+    <div>
+      <h1>
+        HomePage
+      </h1>
+      <div>
+        Welcome to my test app! This is a playground for testing out different features.
+      </div>
+    </div>
   )
 }
 
