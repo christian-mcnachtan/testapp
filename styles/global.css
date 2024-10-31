@@ -28,4 +28,11 @@ h1 {
     padding: 1rem 2rem;
     background-color: #333;
     color: #fff;
+    border-radius: 10px;
+}
+
+#navbar a:hover {
+    background-color: #555;
+    scale: 1.2;
+    border-radius: 5px;
 }
