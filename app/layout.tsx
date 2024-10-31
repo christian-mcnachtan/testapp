@@ -1,7 +1,8 @@
 import '@/styles/global.css';
 import Navbar from '@/components/Navbar';
 
-const MainLayout = ({children}) => {
+const MainLayout:React.FC<React.PropsWithChildren> = ({children}) => {
+  
   return (
    <html>
     <body>
