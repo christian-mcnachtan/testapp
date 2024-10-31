@@ -8,9 +8,9 @@ export const metadata = {
 
 const HomePage = () => {
   return (
-    <div className='text-2xl'>
+    <h1>
       HomePage
-    </div>
+    </h1>
   )
 }
 
