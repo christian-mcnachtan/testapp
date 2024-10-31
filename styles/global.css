@@ -31,6 +31,12 @@ h1 {
     border-radius: 10px;
 }
 
+
+#navbar a {
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+}
+
 #navbar a:hover {
     background-color: #555;
     scale: 1.2;
