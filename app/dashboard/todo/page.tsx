@@ -1,16 +1,18 @@
-import React from 'react'
+import React from 'react';
+import ToDoList from '@/components/ToDoList'; 
+import prisma from '@/utils/prismaClient'; // Adjust path as needed to import Prisma client
+import { ToDoItem } from '@/types/types';
 
-const ToDo = () => {
-  return (
-    <div>
-        <h1>
-            To-do List
-        </h1>
-        <div>
-            This page will only be accessible to logged in users. The user will be able to create, edit, and delete to-do items.
-        </div>
-    </div>
-  )
-}
-
-export default ToDo
+const ToDoPage = async () => {
+    // Fetch initial to-do data from the database
+    const todos = await prisma.todo.findMany();
+  
+    return (
+      <div>
+        <h1 className="text-2xl font-bold mb-4">To-do List</h1>
+        <ToDoList initialTodos={todos} />
+      </div>
+    );
+  };
+  
+  export default ToDoPage;
