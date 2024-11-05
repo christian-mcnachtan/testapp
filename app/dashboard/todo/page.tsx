@@ -1,10 +1,10 @@
 import React from 'react';
 import ToDoList from '@/components/ToDoList'; 
-import prisma from '@/utils/prismaClient'; // Adjust path as needed to import Prisma client
-import { ToDoItem } from '@/types/types';
+import prisma from '@/prisma/db'; 
+
 
 const ToDoPage = async () => {
-    // Fetch initial to-do data from the database
+    
     const todos = await prisma.todo.findMany();
   
     return (

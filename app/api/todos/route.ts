@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/utils/prismaClient';
+import prisma from '@/prisma/db';
 
 export async function POST(req: NextRequest) {
   try {
@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
     const newToDo = await prisma.todo.create({
       data: {
         title: body.title,
-        content: body.content || '',
+        content: body.content,
         completed: body.completed || false,
       },
     });

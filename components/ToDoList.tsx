@@ -9,16 +9,16 @@ interface ToDoListProps {
   
   const ToDoList: React.FC<ToDoListProps> = ({ initialTodos }) => {
     const [todos, setTodos] = useState<ToDoItem[]>(initialTodos);
-    const [newToDo, setNewToDo] = useState<string>('');
+    const [newToDo, setNewToDo] = useState({ title: '', content: '' });
   
     const handleAddToDo = async () => {
-      if (!newToDo.trim()) return;
+        if (!newToDo.title.trim() || !newToDo.content.trim()) return;
   
       // Create new to-do item
       const newToDoItem = {
-        title: newToDo,
+        title: newToDo.title,
         completed: false,
-        content: '', // Adjust as needed
+        content: newToDo.content, 
       };
   
       try {
@@ -32,21 +32,29 @@ interface ToDoListProps {
   
         const createdToDo = await response.json();
         setTodos([...todos, createdToDo]);
-        setNewToDo('');
+        setNewToDo({ title: '', content: '' });
       } catch (error) {
         console.error('Error adding to-do:', error);
       }
     };
 
     const handleToggleComplete = async (id: number) => {
+      const toDoTogle = todos.find(todo => todo.id === id);
+        if (!toDoTogle) return;
+
         try {
           const response = await fetch(`/api/todos/${id}`, {
             method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ completed: !toDoTogle.completed }),
           });
+
           if (response.ok) {
             setTodos(prevTodos =>
               prevTodos.map(todo =>
-                todo.id === id ? { ...todo, completed: true } : todo
+                todo.id === id ? { ...todo, completed: !todo.completed} : todo
               )
             );
           } else {
@@ -82,9 +90,16 @@ interface ToDoListProps {
         <div className="mb-4">
           <input
             type="text"
-            placeholder="Enter new to-do"
-            value={newToDo}
-            onChange={(e) => setNewToDo(e.target.value)}
+            placeholder="Enter new to-do title"
+            value={newToDo.title}
+            onChange={(e) => setNewToDo({ ...newToDo, title: e.target.value })}
+            className="border rounded p-2 mr-2"
+          />
+          <input
+            type="text"
+            placeholder="description"
+            value={newToDo.content}
+            onChange={(e) => setNewToDo({ ...newToDo, content: e.target.value })}
             className="border rounded p-2 mr-2"
           />
           <button onClick={handleAddToDo} className="bg-blue-500 text-white px-3 py-2 rounded">

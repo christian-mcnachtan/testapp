@@ -1,5 +1,5 @@
 import React from 'react'
-import prisma from '../db'
+import prisma from '../../prisma/db'
 
 
 const page = async () => {
