@@ -1,13 +1,13 @@
 "use client"
 
 import { Authenticator } from '@aws-amplify/ui-react';
-import { fetchUserAttributes, FetchUserAttributesOutput } from 'aws-amplify/auth';
+import { AuthUser, fetchUserAttributes, FetchUserAttributesOutput } from 'aws-amplify/auth';
 import { useEffect, useState } from 'react';
 
 
 export default function App() {
     const [currentUser, setCurrentUser] = useState<FetchUserAttributesOutput|undefined>();
-
+    const [userSession, setUserSession] = useState<AuthUser>();
     
 
     async function currentAuthenticatedUser() {
@@ -20,16 +20,18 @@ export default function App() {
     }
   useEffect(() => {
     currentAuthenticatedUser();
-  }, []);
+  }, [userSession]);
   return (
     <Authenticator>
-      {({ signOut, user }) => (
+      {({ signOut, user }) => {
+        setUserSession(user);
+        return (
         <main>
           <h1>Hello {currentUser?.email}</h1>
           <button onClick={signOut}>Sign out</button>
           
         </main>
-      )}
+      )}}
     </Authenticator>
   );
 };
