@@ -1,30 +1,20 @@
 "use client"
 
+import useCurrentUser from '@/hooks/useCurrentUser';
 import { Authenticator } from '@aws-amplify/ui-react';
-import { AuthUser, fetchUserAttributes, FetchUserAttributesOutput } from 'aws-amplify/auth';
-import { useEffect, useState } from 'react';
+
 
 
 export default function App() {
-    const [currentUser, setCurrentUser] = useState<FetchUserAttributesOutput|undefined>();
-    const [userSession, setUserSession] = useState<AuthUser>();
+    
+    const currentUser = useCurrentUser();
     
 
-    async function currentAuthenticatedUser() {
-      try {
-        const  result   = await fetchUserAttributes();
-        setCurrentUser(result);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  useEffect(() => {
-    currentAuthenticatedUser();
-  }, [userSession]);
+    
   return (
     <Authenticator>
       {({ signOut, user }) => {
-        setUserSession(user);
+        
         return (
         <main>
           <h1>Hello {currentUser?.email}</h1>
