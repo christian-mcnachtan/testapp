@@ -16,6 +16,7 @@ const Navbar = () => {
             <Link href="/about" className={ `${pathname === '/about' ? 'bg-white text-black' : ''}` }>About</Link>
             <Link href="/contact" className={ `${pathname === '/contact' ? 'bg-white text-black' : ''}` }>Contact</Link>
             <Link href="/dashboard" className={ `${pathname === '/dashboard' ? 'bg-white text-black' : ''}` }>Dashboard</Link>
+            <Link href="/login" className={ `${pathname === '/login' ? 'bg-white text-black' : ''}` }>Login</Link>
         </div>
       
     </div>

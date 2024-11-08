@@ -30,6 +30,7 @@ model Todo {
   title     String
   created   DateTime @default(now())
   content   String?
+  priority  Boolean  @default(false)
   completed Boolean  @default(false)
   published Boolean  @default(false)
   authorId  Int?

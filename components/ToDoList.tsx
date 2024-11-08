@@ -1,7 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ToDoCard from './ToDoCard';
 import { ToDoItem } from '@/types/types'; // Adjust path as needed
+import FilterBar from './FilterBar';
 
 interface ToDoListProps {
     initialTodos: ToDoItem[];
@@ -10,6 +11,22 @@ interface ToDoListProps {
   const ToDoList: React.FC<ToDoListProps> = ({ initialTodos }) => {
     const [todos, setTodos] = useState<ToDoItem[]>(initialTodos);
     const [newToDo, setNewToDo] = useState({ title: '', content: '' });
+    const [sortCriteria, setSortCriteria] = useState<string>('date');
+    const [sortedTodos, setSortedTodos] = useState<ToDoItem[]>([]);
+
+    useEffect(() => {
+      const sorted = [...todos].sort((a, b) => {
+        if (sortCriteria === 'priority') {
+          return a.priority === b.priority ? 0 : a.priority ? 1 : -1;
+        } else if (sortCriteria === 'completed') {
+          return a.completed === b.completed ? 0 : a.completed ? 1 : -1;
+        } else {
+          return new Date(a.created).getTime() - new Date(b.created).getTime();
+        }
+      });
+      setSortedTodos(sorted);
+    }, [sortCriteria, todos]);
+
   
     const handleAddToDo = async () => {
         if (!newToDo.title.trim() || !newToDo.content.trim()) return;
@@ -18,6 +35,7 @@ interface ToDoListProps {
       const newToDoItem = {
         title: newToDo.title,
         completed: false,
+        priority: false,
         content: newToDo.content, 
       };
   
@@ -37,6 +55,12 @@ interface ToDoListProps {
         console.error('Error adding to-do:', error);
       }
     };
+
+    const handleSortChange = (criteria: string) => {
+      setSortCriteria(criteria);
+    };
+
+  
 
     const handleToggleComplete = async (id: number) => {
       const toDoTogle = todos.find(todo => todo.id === id);
@@ -64,6 +88,33 @@ interface ToDoListProps {
           console.error('Error marking to-do as complete:', error);
         }
       };
+
+      const handleTogglePriority = async (id: number) => {
+        const toDoTogle = todos.find(todo => todo.id === id);
+        if (!toDoTogle) return;
+
+        try {
+          const response = await fetch(`/api/todos/${id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ priority: !toDoTogle.priority }),
+          });
+
+          if (response.ok) {
+            setTodos(prevTodos =>
+              prevTodos.map(todo =>
+                todo.id === id ? { ...todo, priority: !todo.priority } : todo
+              )
+            );
+          } else {
+            console.error('Failed to mark as priority');
+          }
+        } catch (error) {
+          console.error('Error marking to-do as priority:', error);
+        }
+      }
       
       const handleDelete = async (id: number) => {
         try {
@@ -85,7 +136,7 @@ interface ToDoListProps {
 
   
     return (
-      <div>
+      <div className="w-1/2 mx-auto">
         
         <div className="mb-4">
           <input
@@ -102,18 +153,23 @@ interface ToDoListProps {
             onChange={(e) => setNewToDo({ ...newToDo, content: e.target.value })}
             className="border rounded p-2 mr-2"
           />
-          <button onClick={handleAddToDo} className="bg-blue-500 text-white px-3 py-2 rounded">
+          <button onClick={handleAddToDo} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded">
             Add ToDo
           </button>
         </div>
-        {todos.map(todo => (
+        <h2 className="text-3xl font-bold">To Do List</h2>
+        <FilterBar onSortChange={handleSortChange} />
+        {sortedTodos.map(todo => (
           <ToDoCard
             key={todo.id}
             id={todo.id}
             title={todo.title}
+            created={todo.created}
             content={todo.content}
+            priority={todo.priority}
             completed={todo.completed}
             onToggleComplete={() => handleToggleComplete(todo.id)}
+            onTogglePriority={() => handleTogglePriority(todo.id)}
             onDelete={() => handleDelete(todo.id)}
           />
         ))}
